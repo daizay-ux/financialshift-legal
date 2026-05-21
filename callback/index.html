@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>FinancialShift OAuth callback</title>
+<style>
+body { background: #0d1117; color: #e6edf3; font-family: -apple-system, "Segoe UI", Roboto, sans-serif; max-width: 720px; margin: 56px auto; padding: 0 24px; line-height: 1.55; }
+h1 { color: #4cd964; margin: 0 0 16px 0; }
+.card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 24px; margin-top: 24px; }
+.label { font-size: 13px; color: #8b949e; text-transform: uppercase; letter-spacing: .03em; }
+pre { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 14px 16px; overflow-x: auto; font-size: 13px; word-break: break-all; white-space: pre-wrap; }
+button { background: #4cd964; color: #0d1117; border: 0; border-radius: 8px; padding: 10px 16px; font-weight: 600; cursor: pointer; margin-right: 8px; }
+button:hover { background: #5fe57a; }
+.error { color: #ff5b5b; }
+.muted { color: #8b949e; font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>FinancialShift OAuth callback</h1>
+<p class="muted">You authorized the FinancialShift Auto Post app. Copy the values below back into the terminal that started the OAuth flow.</p>
+<div id="error" class="card" style="display:none;"><div class="label">Error</div><pre id="error-body" class="error"></pre></div>
+<div id="success" class="card" style="display:none;">
+<div class="label">Authorization code</div><pre id="code"></pre>
+<button id="copy-code">Copy code</button><button id="copy-url">Copy full URL</button>
+<div class="label" style="margin-top:18px;">State</div><pre id="state"></pre>
+<div class="label" style="margin-top:18px;">Scopes granted</div><pre id="scopes"></pre>
+<p class="muted" style="margin-top:18px;">Paste either the code or the full URL into <code>tt_oauth_flow.py</code>.</p>
+</div>
+<div id="empty" class="card"><p class="muted">Waiting for TikTok to redirect here with a <code>?code=</code> parameter. If you landed here without going through TikTok, this page has nothing to show.</p></div>
+<script>
+(function(){
+var p=new URLSearchParams(window.location.search);
+var code=p.get('code'),state=p.get('state'),scopes=p.get('scopes'),err=p.get('error'),ed=p.get('error_description');
+if(err){document.getElementById('empty').style.display='none';document.getElementById('error').style.display='block';document.getElementById('error-body').textContent=err+(ed?'\n'+decodeURIComponent(ed):'');return;}
+if(!code)return;
+document.getElementById('empty').style.display='none';
+document.getElementById('success').style.display='block';
+document.getElementById('code').textContent=code;
+document.getElementById('state').textContent=state||'(none)';
+document.getElementById('scopes').textContent=scopes?decodeURIComponent(scopes):'(default)';
+function cp(t){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t);}else{var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}}
+document.getElementById('copy-code').addEventListener('click',function(){cp(code);this.textContent='Copied!';var b=this;setTimeout(function(){b.textContent='Copy code';},1500);});
+document.getElementById('copy-url').addEventListener('click',function(){cp(window.location.href);this.textContent='Copied!';var b=this;setTimeout(function(){b.textContent='Copy full URL';},1500);});
+})();
+</script>
+</body>
+</html>
